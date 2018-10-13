@@ -1,8 +1,10 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
     entry: './src/ts/main.ts',
-    devtool: 'inline-source-map',
+    devtool: 'eval',
+    mode: 'development',
     module: {
         rules: [
             {
@@ -12,23 +14,15 @@ module.exports = {
             },
             {
                 test: /\.scss$/,
-                use: [
-                    {
-                        loader: "style-loader"
-                    },
-                    {
-                        loader: "css-loader",
-                        options: {
-                            sourceMap: true
-                        }
-                    },
-                    {
-                        loader: "sass-loader",
-                        options: {
-                            sourceMap: true
-                        }
-                    }
-                ]
+                use: ["style-loader", "css-loader", "sass-loader"]
+            },
+            {
+                test: /\.html$/,
+                use: 'html-loader'
+            },
+            {
+                test: /\.jpg$/,
+                use: ['file-loader', 'url-loader']
             }
         ]
     },
@@ -37,10 +31,14 @@ module.exports = {
     },
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist/js'),
-        publicPath: '/dist/js'
+        path: path.resolve(__dirname, 'dist')
     },
     devServer: {
-        publicPath: '/dist/js'
-    }
+        contentBase: 'dist'
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: 'src/index.html'
+        })
+    ]
 };
